@@ -1,0 +1,34 @@
+﻿<Window x:Class="ChatcodeTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converter="clr-namespace:ChatcodeTool.Converter"
+        xmlns:viewModels="clr-namespace:ChatcodeTool.ViewModels"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:local="clr-namespace:ChatcodeTool"
+        mc:Ignorable="d"
+        DataContext="{dxmvvm:ViewModelSource Type=viewModels:MainWindowVM}"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainWindowVM, IsDesignTimeCreatable=False}"
+        Title="ChatcodeTool"
+        Icon="icon.ico"
+        Height="200" Width="800">
+    <Window.Resources>
+        <converter:QuantityIsValidConverter x:Key="QuantityIsNOTValidConverter"/>
+        <converter:TextIsChatcodeConverter x:Key="TextIsNOTChatcodeConverter"/>
+    </Window.Resources>
+    <Canvas>
+        <TextBox x:Name="InputBox" Canvas.Left="47" Canvas.Top="36" Text="{Binding InputChatcode, UpdateSourceTrigger=PropertyChanged}" Height="38" Width="160" FontSize="23"/>
+        <TextBox x:Name="QuantityBox" Width="104" Canvas.Left="47" Canvas.Top="104" Text="{Binding InputQuantity, UpdateSourceTrigger=PropertyChanged}" Height="38" FontSize="23"/>
+        <TextBox x:Name="OutputBox" Width="164" Canvas.Left="602" Canvas.Top="60" Text="{Binding CurrentChatcode, UpdateSourceTrigger=PropertyChanged}" Height="44" IsReadOnly="True" FontSize="23"/>
+        <TextBlock Text="Quantity must be atleast 1 and at max 255" Foreground="Red" TextWrapping="Wrap" IsEnabled="False" Canvas.Left="233" Canvas.Top="104" Height="38" Width="170" RenderTransformOrigin="0.574,0.486"
+                   Visibility="{Binding ElementName=QuantityBox, Path=Text, Converter={StaticResource QuantityIsNOTValidConverter}}" FontSize="15"/>
+        <TextBlock Text="Please enter a valid Guildwars2 Chatcode" Canvas.Left="233" Canvas.Top="36" Foreground="Red" TextWrapping="Wrap" Height="38" Width="170"
+                   Visibility="{Binding ElementName=InputBox, Path=Text, Converter={StaticResource TextIsNOTChatcodeConverter}}" FontSize="15"/>
+        <TextBlock Width="133" Canvas.Left="47" Canvas.Top="11" Text="Original Chatcode" FontSize="15"/>
+        <TextBlock Width="115" Canvas.Left="47" Canvas.Top="80" Text="Desired Quantity" FontSize="15"/>
+        <Button Canvas.Left="427" Canvas.Top="60" Height="44" Width="140" Content="Generate"
+                IsEnabled="{Binding GeneratingAvailable, UpdateSourceTrigger=PropertyChanged}"
+                Command="{Binding GetNewChatcodeCommand}"/>
+    </Canvas>
+</Window>
